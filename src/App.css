@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  width: 100%;
+  margin: 0;
+  min-height: 100vh;
+  background-color: theme('colors.neutral.900');
+}
+
+.timeline-grid {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  background: theme('colors.neutral.800');
+  border-radius: theme('borderRadius.xl');
+  box-shadow: theme('boxShadow.soft');
+  margin: 2rem;
+  padding: 1.5rem;
+}
+
+.timeline-grid::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.timeline-grid::-webkit-scrollbar-track {
+  background: theme('colors.neutral.700');
+  border-radius: theme('borderRadius.full');
+}
+
+.timeline-grid::-webkit-scrollbar-thumb {
+  background: theme('colors.neutral.600');
+  border-radius: theme('borderRadius.full');
+}
+
+.timeline-grid::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.neutral.500');
+}
+
+.timeline-header {
+  @apply sticky top-0 z-10 bg-neutral-800 border-b border-neutral-700;
+  backdrop-filter: blur(8px);
+}
+
+.timeline-year {
+  @apply text-sm font-medium text-neutral-400;
+}
+
+.timeline-event {
+  @apply rounded-lg p-3 transition-all duration-200 hover:shadow-md;
+}
+
+.timeline-event.person {
+  @apply bg-primary-900/20 border border-primary-800;
+}
+
+.timeline-event.event {
+  @apply bg-secondary-900/20 border border-secondary-800;
+}
+
+.timeline-tag {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.timeline-tag.person {
+  @apply bg-primary-900/40 text-primary-200;
+}
+
+.timeline-tag.event {
+  @apply bg-secondary-900/40 text-secondary-200;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.timeline-scroll-container {
+  height: calc(100vh - 12rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.neutral.600') theme('colors.neutral.800');
+}
+
+.timeline-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.timeline-scroll-container::-webkit-scrollbar-track {
+  background: theme('colors.neutral.800');
+}
+
+.timeline-scroll-container::-webkit-scrollbar-thumb {
+  background-color: theme('colors.neutral.600');
+  border-radius: 4px;
+}
+
+.timeline-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: theme('colors.neutral.500');
+}
