@@ -1,5 +1,5 @@
 import { TimelineEvent, START_YEAR, TOTAL_YEARS, REGIONS } from '../data/events';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TimelineMinimapProps {
   events: TimelineEvent[];
@@ -7,12 +7,20 @@ interface TimelineMinimapProps {
 }
 
 export function TimelineMinimap({ events, scrollContainer }: TimelineMinimapProps) {
-  const MINIMAP_WIDTH = 120;
-  const ROW_HEIGHT = 2; // Scaled down from the main grid's row height
+  const [viewportHeight, setViewportHeight] = useState(0);
   const minimapRef = useRef<HTMLDivElement>(null);
+  const ROW_HEIGHT = 1.5; // Reduced from 2px for better density
 
   useEffect(() => {
     if (!scrollContainer || !minimapRef.current) return;
+
+    const updateViewportHeight = () => {
+      const containerHeight = scrollContainer.clientHeight;
+      const totalHeight = scrollContainer.scrollHeight;
+      const minimapHeight = minimapRef.current!.scrollHeight;
+      const newViewportHeight = (containerHeight / totalHeight) * minimapHeight;
+      setViewportHeight(newViewportHeight);
+    };
 
     const handleScroll = () => {
       const scrollPercentage = scrollContainer.scrollTop / (scrollContainer.scrollHeight - scrollContainer.clientHeight);
@@ -20,8 +28,20 @@ export function TimelineMinimap({ events, scrollContainer }: TimelineMinimapProp
       minimapRef.current!.scrollTop = minimapScrollTop;
     };
 
+    const resizeObserver = new ResizeObserver(() => {
+      updateViewportHeight();
+    });
+
+    resizeObserver.observe(scrollContainer);
     scrollContainer.addEventListener('scroll', handleScroll);
-    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    
+    // Initial update
+    updateViewportHeight();
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      resizeObserver.disconnect();
+    };
   }, [scrollContainer]);
 
   const getEventColors = (tags: string[]) => {
@@ -43,18 +63,22 @@ export function TimelineMinimap({ events, scrollContainer }: TimelineMinimapProp
   const regionsToProcess = isSingleRegion ? uniqueRegions : REGIONS;
 
   return (
-    <div className="w-[120px] bg-neutral-900/80 backdrop-blur-sm border-l border-neutral-800 h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="w-24 md:w-32 lg:w-40 bg-neutral-900/80 backdrop-blur-sm border-l border-neutral-800 h-[calc(100vh-4rem)] overflow-hidden">
       <div 
         ref={minimapRef}
         className="relative w-full h-full overflow-hidden"
-        style={{ height: '100%' }}
       >
+        {/* Viewport Indicator */}
+        <div 
+          className="absolute w-full bg-neutral-700/20 border border-neutral-600/30"
+          style={{ height: `${viewportHeight}px` }}
+        />
+
         {/* Grid Container */}
         <div 
           className={`relative ${isSingleRegion ? '' : 'grid grid-cols-4'}`}
           style={{ 
-            marginLeft: '12px', 
-            width: `${MINIMAP_WIDTH - 12}px`,
+            marginLeft: '8px',
             height: `${years.length * ROW_HEIGHT}px`
           }}
         >
